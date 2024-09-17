@@ -1,8 +1,14 @@
 import pyaudio
 import wave
+import re
+import os
 import speech_recognition as sr
 from pydub import AudioSegment
-import os
+from collections import defaultdict
+from openai import OpenAI
+
+# Set up the OpenAI client with your API key
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def record_audio(filename, duration=5, sample_rate=44100, chunk=1024):
     audio = pyaudio.PyAudio()
@@ -51,6 +57,47 @@ def convert_m4a_to_wav(m4a_file, wav_file):
     audio = AudioSegment.from_file(m4a_file, format="m4a")
     audio.export(wav_file, format="wav")
 
+def simple_summarize(text, num_sentences=3):
+    # Remove special characters and convert to lowercase
+    clean_text = re.sub(r'[^\w\s]', '', text.lower())
+    
+    # Split text into sentences and words
+    sentences = text.split('.')
+    words = clean_text.split()
+    
+    # Calculate word frequencies
+    word_freq = defaultdict(int)
+    for word in words:
+        word_freq[word] += 1
+    
+    # Score sentences based on word frequency
+    sentence_scores = []
+    for sentence in sentences:
+        score = sum(word_freq[word.lower()] for word in sentence.split() if word.lower() in word_freq)
+        sentence_scores.append((sentence, score))
+    
+    # Sort sentences by score and select top ones
+    summary_sentences = sorted(sentence_scores, key=lambda x: x[1], reverse=True)[:num_sentences]
+    
+    # Join the top sentences to create the summary
+    summary = '. '.join(sentence.strip() for sentence, score in summary_sentences) + '.'
+    
+    return summary
+
+def summarize_with_gpt(text):
+    try:
+        completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that summarizes text."},
+                {"role": "user", "content": f"Please summarize the following text concisely:\n\n{text}"}
+            ]
+        )
+        return completion.choices[0].message.content
+    except Exception as e:
+        print(f"Error in GPT summarization: {e}")
+        return None
+
 if __name__ == "__main__":
     print("Audio Transcription Tool")
     print("1. Record new audio")
@@ -77,3 +124,14 @@ if __name__ == "__main__":
     if transcribed_text_lt:
         print("\nTranscribed text (Lithuanian):")
         print(transcribed_text_lt)
+
+        summary = simple_summarize(transcribed_text_lt)
+        print("\nSummary:")
+        print(summary)
+
+        summary_gpt = summarize_with_gpt(transcribed_text_lt)
+        if summary_gpt:
+            print("\nSummary (GPT):")
+            print(summary_gpt)
+        else:
+            print("\nFailed to generate GPT summary.")
