@@ -57,32 +57,6 @@ def convert_m4a_to_wav(m4a_file, wav_file):
     audio = AudioSegment.from_file(m4a_file, format="m4a")
     audio.export(wav_file, format="wav")
 
-def simple_summarize(text, num_sentences=3):
-    # Remove special characters and convert to lowercase
-    clean_text = re.sub(r'[^\w\s]', '', text.lower())
-    
-    # Split text into sentences and words
-    sentences = text.split('.')
-    words = clean_text.split()
-    
-    # Calculate word frequencies
-    word_freq = defaultdict(int)
-    for word in words:
-        word_freq[word] += 1
-    
-    # Score sentences based on word frequency
-    sentence_scores = []
-    for sentence in sentences:
-        score = sum(word_freq[word.lower()] for word in sentence.split() if word.lower() in word_freq)
-        sentence_scores.append((sentence, score))
-    
-    # Sort sentences by score and select top ones
-    summary_sentences = sorted(sentence_scores, key=lambda x: x[1], reverse=True)[:num_sentences]
-    
-    # Join the top sentences to create the summary
-    summary = '. '.join(sentence.strip() for sentence, score in summary_sentences) + '.'
-    
-    return summary
 
 def summarize_with_gpt(text):
     try:
@@ -90,7 +64,7 @@ def summarize_with_gpt(text):
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant that summarizes text."},
-                {"role": "user", "content": f"Please summarize the following text concisely:\n\n{text}"}
+                {"role": "user", "content": f"Prašau trumpai apibendrinti šį tekstą:\n\n{text}"}
             ]
         )
         return completion.choices[0].message.content
@@ -111,7 +85,7 @@ if __name__ == "__main__":
         wav_file = output_file
     elif choice == "2":
         print("Enter the filename of your M4A file (located in the same folder as main.py):")
-        print("For example, if your file is 'recording.m4a', just type 'recording.m4a'")
+        print("For example, if your file is 'Recording.m4a', just type 'Recording.m4a'")
         m4a_file = input("Filename: ")
         wav_file = "converted_audio.wav"
         convert_m4a_to_wav(m4a_file, wav_file)
@@ -124,10 +98,6 @@ if __name__ == "__main__":
     if transcribed_text_lt:
         print("\nTranscribed text (Lithuanian):")
         print(transcribed_text_lt)
-
-        summary = simple_summarize(transcribed_text_lt)
-        print("\nSummary:")
-        print(summary)
 
         summary_gpt = summarize_with_gpt(transcribed_text_lt)
         if summary_gpt:
