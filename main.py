@@ -2,7 +2,7 @@ from src.audio_utils import record_audio, convert_m4a_to_wav
 from src.summarization import summarize_with_gpt
 from src.transcription import transcribe_audio
 
-if __name__ == "__main__":
+def main():
     print("Audio Transcription Tool")
     print("1. Record new audio")
     print("2. Use pre-recorded file")
@@ -25,12 +25,15 @@ if __name__ == "__main__":
     
     transcribed_text_lt = transcribe_audio(wav_file, language='lt-LT')
     if transcribed_text_lt:
-        print("\nTranscribed text (Lithuanian):")
+        print("\nTranscribed text:")
         print(transcribed_text_lt)
 
         summary_gpt = summarize_with_gpt(transcribed_text_lt)
         if summary_gpt:
-            print("\nSummary (GPT):")
+            print("\nSummary:")
             print(summary_gpt)
         else:
-            print("\nFailed to generate GPT summary.")
+            print("\nFailed to generate summary.")
+
+if __name__ == "__main__":
+    main()
