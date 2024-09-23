@@ -5,7 +5,6 @@ from pydub import AudioSegment
 def record_audio(filename, duration=5, sample_rate=44100, chunk=1024):
     audio = pyaudio.PyAudio()
     
-    # Open stream
     stream = audio.open(format=pyaudio.paInt16,
                         channels=1,
                         rate=sample_rate,
@@ -21,12 +20,10 @@ def record_audio(filename, duration=5, sample_rate=44100, chunk=1024):
     
     print("Finished recording.")
     
-    # Stop and close the stream
     stream.stop_stream()
     stream.close()
     audio.terminate()
     
-    # Save the recorded data as a WAV file
     with wave.open(filename, 'wb') as wf:
         wf.setnchannels(1)
         wf.setsampwidth(audio.get_sample_size(pyaudio.paInt16))
