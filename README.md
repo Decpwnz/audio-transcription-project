@@ -1,6 +1,6 @@
 # Audio Transcription Project
 
-This project aims to transcribe audio files using Python. It provides functionality for recording audio, converting M4A files to WAV, transcribing audio to text, and summarizing the transcribed text using GPT-3.5
+This project aims to transcribe audio files using Python. It provides functionality for recording audio, converting M4A files to WAV, transcribing audio to text, and summarizing the transcribed text using GPT-3.5.
 
 ## Features
 
