@@ -1,0 +1,3 @@
+# Summary
+
+Daktarė šunų asistentų auginimo metu jaučia neviltį dėl savijautos blogėjimo. Šie šunys yra specialiai parengti padėti žmonėms su negalia fiziškai ir socialiai. Pirmieji šunys buvo vadlinami vedliais, bet dabar šie gyvūnai mokomi padėti įvairiems žmonėms, kuriems reikalinga pagalba, tokiems kaip cukrinio diabeto ar autoimuninių ligų sergantys. Šunys yra naudojami kaip pagrindinis įrankis įspėti apie galimus sveikatos sutrikimus.

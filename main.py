@@ -27,13 +27,23 @@ def main():
     if transcribed_text_lt:
         print("\nTranscribed text:")
         print(transcribed_text_lt)
+        
+        # Save transcribed text to a Markdown file
+        with open("transcribed_text.md", "w", encoding="utf-8") as f:
+            f.write(f"# Transcribed Text\n\n{transcribed_text_lt}")
 
         summary_gpt = summarize_with_gpt(transcribed_text_lt)
         if summary_gpt:
             print("\nSummary:")
             print(summary_gpt)
+            
+            # Save summary to a Markdown file
+            with open("summary.md", "w", encoding="utf-8") as f:
+                f.write(f"# Summary\n\n{summary_gpt}")
         else:
             print("\nFailed to generate summary.")
+    else:
+        print("\nFailed to transcribe audio.")
 
 if __name__ == "__main__":
     main()
